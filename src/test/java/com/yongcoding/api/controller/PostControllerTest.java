@@ -109,14 +109,19 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 단건 조회")
+    @DisplayName("글 단건 조회 (제목은 10글자 이하로 잘라서 응답)")
     void test4() throws Exception {
         // given
         Post post = Post.builder()
-                .title("제목입니다.")
+                .title("12345678910")
                 .content("내용입니다.")
                 .build();
         postRepository.save(post);
+
+        // 클라이언트 요구사항
+        // json 응답에서 타이틀 값 길이를 최대 10글자로 해주세요.
+        // -> 보통은 클라에서 처리, Post 엔티티에서 getter를 오버라이드해서 처리할 수 있다.
+        // Getter 오버라이드시 다른 정책이 추가되면, 복잡해짐.
 
 
         // expected (when + then)
@@ -125,7 +130,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
-                .andExpect(jsonPath("$.title").value("제목입니다."))
+                .andExpect(jsonPath("$.title").value("1234567891"))
                 .andExpect(jsonPath("$.content").value("내용입니다."))
                 .andDo(print());
 

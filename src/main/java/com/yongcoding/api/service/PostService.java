@@ -3,6 +3,7 @@ package com.yongcoding.api.service;
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,10 +51,22 @@ public class PostService {
        postRepository.save(post);
     }
 
-    public Post get(Long id) {
+    public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글 입니다."));
 
-        return post;
+        // 서비스 정책에 맞는 응답 클래스를 분리하는게 좋음
+        PostResponse response = PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+
+        /**
+         * Controller -> WebPostService(response를 위한 행위) -> Repository
+         *               PostService (외부와 연동, 다른 서비스와 통신, 필요시 레이어 나누는 것도 고려!)
+         */
+
+        return response;
     }
 }

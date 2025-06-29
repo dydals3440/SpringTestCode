@@ -3,6 +3,7 @@ package com.yongcoding.api.service;
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,12 +57,14 @@ class PostServiceTest {
                 .build();
         postRepository.save(requestPost);
 
+
         // when
-        Post post = postService.get(requestPost.getId());
+        PostResponse response = postService.get(requestPost.getId());
+
         // then
-        assertNotNull(post);
+        assertNotNull(response);
         assertEquals(1L, postRepository.count());
-        assertEquals("제목입니다.", post.getTitle());
-        assertEquals("내용입니다.", post.getContent());
+        assertEquals("제목입니다.", response.getTitle());
+        assertEquals("내용입니다.", response.getContent());
     }
 }

@@ -25,4 +25,9 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
+//    서비스의 정책을 절대 안넣는게 좋음.
+//    public String getTitle() {
+//        return this.title.substring(0, 10);
+//    }
 }
