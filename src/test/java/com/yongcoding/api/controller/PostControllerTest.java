@@ -35,9 +35,11 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         // { "title": "" }
                         // { "title": null }
-                        .content("{\"title\":\"\", \"content\":\"글 내용입니다.\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("타이틀을 입력해주세요"))
+                        .content("{\"title\": null, \"content\":\"글 내용입니다.\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+                .andExpect(jsonPath("$.validations.title").value("타이틀을 입력해주세요"))
                 .andDo(print());
     }
 }
