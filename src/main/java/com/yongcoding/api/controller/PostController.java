@@ -1,5 +1,6 @@
 package com.yongcoding.api.controller;
 
+import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.service.PostService;
 import jakarta.validation.Valid;
@@ -17,8 +18,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public Map<String, String> getPosts(@RequestBody @Valid PostCreate request) {
-        postService.write(request);
-        return Map.of();
+    public void post(@RequestBody @Valid PostCreate request) {
+       postService.write(request);
     }
 }

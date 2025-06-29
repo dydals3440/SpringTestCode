@@ -1,6 +1,7 @@
 package com.yongcoding.api.response;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +19,18 @@ import java.util.Map;
  * }
  */
 @Getter
-@RequiredArgsConstructor
 public class ErrorResponse {
 
     private final String code;
     private final String message;
 //  HashMap은 좋은 구조가 아님. 추후 리팩토링. (Map -> DTO)
     private Map<String, String> validations = new HashMap<>();
+
+    @Builder
+    public ErrorResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
     public void addValidation(String fieldName, String errorMessage) {
         this.validations.put(fieldName, errorMessage);
