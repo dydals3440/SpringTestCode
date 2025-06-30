@@ -4,12 +4,15 @@ import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.response.PostResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,5 +69,28 @@ class PostServiceTest {
         assertEquals(1L, postRepository.count());
         assertEquals("제목입니다.", response.getTitle());
         assertEquals("내용입니다.", response.getContent());
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test5() {
+        // given
+        Post post1 = Post.builder()
+                .title("foo1")
+                .content("bar1")
+                .build();
+        Post post2 = Post.builder()
+                .title("foo2")
+                .content("bar2")
+                .build();
+        postRepository.saveAll(List.of(post1, post2));
+
+
+        // when
+        List<PostResponse> posts = postService.getList();
+
+        // then
+        assertEquals(2, posts.size());
+
     }
 }

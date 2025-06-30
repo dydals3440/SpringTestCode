@@ -1,5 +1,6 @@
 package com.yongcoding.api.response;
 
+import com.yongcoding.api.domain.Post;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,13 @@ public class PostResponse {
     private final Long id;
     private final String title;
     private final String content;
+
+    // 생성자 오버로딩
+    public PostResponse(Post post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+    }
 
     // 생성자에 @Builder를 붙이면 빌더 패턴으로 객체를 생성할 수 있음.
     @Builder

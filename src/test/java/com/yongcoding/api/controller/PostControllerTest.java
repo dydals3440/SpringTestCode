@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.response.PostResponse;
+import com.yongcoding.api.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.*;
@@ -31,6 +35,8 @@ class PostControllerTest {
 
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostService postService;
 
     @BeforeEach
     void clean() {
@@ -134,5 +140,29 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.content").value("내용입니다."))
                 .andDo(print());
 
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test5() throws Exception {
+        Post post1 = Post.builder()
+                .title("title_1")
+                .content("content_1")
+                .build();
+        postRepository.save(post1);
+
+        Post post2 = Post.builder()
+                .title("제목2입니다.")
+                .content("내용2입니다.")
+                .build();
+        postRepository.save(post2);
+
+        mockMvc.perform(get("/posts").contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(post1.getId()))
+                .andExpect(jsonPath("$[0].title").value("title_1"))
+                .andExpect(jsonPath("$[0].content").value("content_1"))
+                .andDo(print());
     }
 }

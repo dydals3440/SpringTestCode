@@ -1,5 +1,6 @@
 package com.yongcoding.api.controller;
 
+import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.response.PostResponse;
 import com.yongcoding.api.service.PostService;
@@ -7,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -24,9 +27,11 @@ public class PostController {
     public PostResponse get(@PathVariable(name = "postId") Long id) {
         // Request 클래스 -> PostCreate (요청과, Validation을 할 수 있는 정책을 담아둔 클래스)
         // Response 클래스 -> PostResponse (서비스 정책에 맞는 로직이 들어갈 수 있는 클래스)
-
-       PostResponse response =  postService.get(id);
-       return response;
+        return postService.get(id);
     }
 
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return postService.getList();
+    }
 }
