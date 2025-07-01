@@ -13,28 +13,61 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // H2 DB
+    runtimeOnly 'com.h2database:h2'
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-core'
+    implementation "com.querydsl:querydsl-jpa:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+
+    // Jakarta Annotation & Persistence
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+    // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Querydsl QClass 생성 디렉토리 설정
+def generated = 'src/main/generated'
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorGeneratedSourcesDirectory = file(generated)
+}
+
+// sourceSets에 QClass 경로 추가
+sourceSets {
+    main {
+        java {
+            srcDirs += generated
+        }
+    }
+}
+
+// clean 시 QClass 디렉토리 삭제
+tasks.named('clean') {
+    doFirst {
+        delete file(generated)
+    }
+}
+
+// 테스트 플랫폼 설정
 tasks.named('test') {
     useJUnitPlatform()
 }

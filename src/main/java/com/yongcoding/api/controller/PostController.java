@@ -1,6 +1,7 @@
 package com.yongcoding.api.controller;
 
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.request.PostSearch;
 import com.yongcoding.api.response.PostResponse;
 import com.yongcoding.api.service.PostService;
 import jakarta.validation.Valid;
@@ -31,7 +32,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(Pageable pageable) {
-        return postService.getList(pageable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+        return postService.getList(postSearch);
     }
 }

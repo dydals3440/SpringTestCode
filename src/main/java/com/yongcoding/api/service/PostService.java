@@ -3,6 +3,7 @@ package com.yongcoding.api.service;
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.request.PostSearch;
 import com.yongcoding.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,11 +71,14 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
+    public List<PostResponse> getList(PostSearch postSearch) {
         // web -> page 1 -> 0
 //        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC,"id"));
 
-        return postRepository.findAll(pageable).stream()
+//        return postRepository.findAll(pageable).stream()
+//                .map(PostResponse::new)
+//                .collect(Collectors.toList());
+        return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }

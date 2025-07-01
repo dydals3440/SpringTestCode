@@ -3,6 +3,7 @@ package com.yongcoding.api.service;
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.request.PostSearch;
 import com.yongcoding.api.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,21 +80,23 @@ class PostServiceTest {
     @DisplayName("글 1페이지 조회")
     void test3() {
         // given (lambda 표현식으로 작성)
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> Post.builder()
-                         .title("YOLOG 제목 " + i)
-                         .content("YOLOG 내용 " + i)
+                         .title("foo" + i)
+                         .content("bar" + i)
                         .build())
                 .collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .build();
+
         // when
-        List<PostResponse> posts = postService.getList(pageable);
+        List<PostResponse> posts = postService.getList(postSearch);
 
         // then
-        assertEquals(5L, posts.size());
-        assertEquals("YOLOG 제목 30", posts.get(0).getTitle());
-        assertEquals("YOLOG 제목 26", posts.get(4).getTitle());
+        assertEquals(10L, posts.size());
+        assertEquals("foo19", posts.get(0).getTitle());
     }
 }
