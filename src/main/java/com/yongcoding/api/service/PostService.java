@@ -1,15 +1,15 @@
 package com.yongcoding.api.service;
 
 import com.yongcoding.api.domain.Post;
+import com.yongcoding.api.domain.PostEditor;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.request.PostEdit;
 import com.yongcoding.api.request.PostSearch;
 import com.yongcoding.api.response.PostResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,5 +81,27 @@ public class PostService {
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    // post.save 대신
+    // 알아서 커밋을 침
+    @Transactional
+    public PostResponse edit(Long id, PostEdit postEdit) {
+       Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+       PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+       if (postEdit.getTitle() != null) {
+          editorBuilder.title(postEdit.getTitle());
+       }
+
+       if (postEdit.getContent() != null) {
+          editorBuilder.content(postEdit.getContent());
+       }
+
+       post.edit(editorBuilder.build());
+
+       return new PostResponse(post);
     }
 }

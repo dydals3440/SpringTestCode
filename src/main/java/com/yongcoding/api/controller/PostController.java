@@ -1,13 +1,13 @@
 package com.yongcoding.api.controller;
 
 import com.yongcoding.api.request.PostCreate;
+import com.yongcoding.api.request.PostEdit;
 import com.yongcoding.api.request.PostSearch;
 import com.yongcoding.api.response.PostResponse;
 import com.yongcoding.api.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,5 +34,10 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public PostResponse edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
+       return postService.edit(postId, request);
     }
 }

@@ -1,10 +1,7 @@
 package com.yongcoding.api.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -30,4 +27,20 @@ public class Post {
 //    public String getTitle() {
 //        return this.title.substring(0, 10);
 //    }
+
+//    public void change(String title, String content) {
+//        this.title = title;
+//        this.content = content;
+//    }
+    public PostEditor.PostEditorBuilder toEditor(){
+        return PostEditor.builder()
+                .title(title)
+                .content(content);
+    }
+
+    // Fixed: PostEditor를 사용하여 수정하는 메서드
+    public void edit(PostEditor postEditor) {
+        title = postEditor.getTitle();
+        content = postEditor.getContent();
+    }
 }
