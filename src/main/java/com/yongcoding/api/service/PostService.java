@@ -53,7 +53,7 @@ public class PostService {
                 .content(postCreate.getContent())
                 .build();
 
-       postRepository.save(post);
+        postRepository.save(post);
     }
 
     public PostResponse get(Long id) {
@@ -87,21 +87,22 @@ public class PostService {
     // 알아서 커밋을 침
     @Transactional
     public PostResponse edit(Long id, PostEdit postEdit) {
-       Post post = postRepository.findById(id)
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
-       PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+        // PostEditorBuilder 생성
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
-       if (postEdit.getTitle() != null) {
-          editorBuilder.title(postEdit.getTitle());
-       }
+        // 값 설정 후 PostEditor 생성
+        PostEditor postEditor = editorBuilder
+                .title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
 
-       if (postEdit.getContent() != null) {
-          editorBuilder.content(postEdit.getContent());
-       }
+        // 엔티티 수정
+        post.edit(postEditor);
 
-       post.edit(editorBuilder.build());
-
-       return new PostResponse(post);
+        // 응답 객체로 반환
+        return new PostResponse(post);
     }
 }
