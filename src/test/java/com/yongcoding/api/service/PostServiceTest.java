@@ -4,18 +4,22 @@ import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.response.PostResponse;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 class PostServiceTest {
@@ -72,25 +76,24 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 여러개 조회")
-    void test5() {
-        // given
-        Post post1 = Post.builder()
-                .title("foo1")
-                .content("bar1")
-                .build();
-        Post post2 = Post.builder()
-                .title("foo2")
-                .content("bar2")
-                .build();
-        postRepository.saveAll(List.of(post1, post2));
+    @DisplayName("글 1페이지 조회")
+    void test3() {
+        // given (lambda 표현식으로 작성)
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                         .title("YOLOG 제목 " + i)
+                         .content("YOLOG 내용 " + i)
+                        .build())
+                .collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
 
-
+        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
         // when
-        List<PostResponse> posts = postService.getList();
+        List<PostResponse> posts = postService.getList(pageable);
 
         // then
-        assertEquals(2, posts.size());
-
+        assertEquals(5L, posts.size());
+        assertEquals("YOLOG 제목 30", posts.get(0).getTitle());
+        assertEquals("YOLOG 제목 26", posts.get(4).getTitle());
     }
 }
