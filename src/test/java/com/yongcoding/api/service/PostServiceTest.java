@@ -1,6 +1,7 @@
 package com.yongcoding.api.service;
 
 import com.yongcoding.api.domain.Post;
+import com.yongcoding.api.exceptions.PostNotFound;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.request.PostEdit;
@@ -169,6 +170,67 @@ class PostServiceTest {
         assertThrows(RuntimeException.class, () -> {
             postRepository.findById(post.getId())
                     .orElseThrow(() -> new RuntimeException("존재하지 않는 글입니다."));
+        });
+    }
+
+    @Test
+    @DisplayName("글 1개 조회 - 존재하지 않은 ID로 조회")
+    void test7() {
+        // given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+
+        // when -> 이때 예외가 터지므로 expected로 잡아야 한다.
+        // expected
+//        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
+//            postService.get(post.getId() + 1L);
+//        });
+//
+//        assertEquals("존재하지 않는 글 입니다.", e.getMessage());
+        assertThrows(PostNotFound.class, () -> {
+            postService.get(post.getId() + 1L);
+        });
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 존재하지 않은 글")
+    void test8() {
+        // given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+
+
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.delete(post.getId() + 1L);
+        });
+    }
+
+    @Test
+    @DisplayName("글 내용 수정 - 존재하지 않은 글")
+    void test9() {
+        // given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목입니다.")
+                .content("수정된 내용입니다.")
+                .build();
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.edit(post.getId() + 1L, postEdit);
         });
     }
 }

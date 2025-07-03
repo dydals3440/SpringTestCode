@@ -2,6 +2,7 @@ package com.yongcoding.api.service;
 
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.domain.PostEditor;
+import com.yongcoding.api.exceptions.PostNotFound;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.request.PostEdit;
@@ -58,7 +59,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글 입니다."));
+                .orElseThrow(() -> new PostNotFound());
         /**
          * Controller -> WebPostService(response를 위한 행위) -> Repository
          *               PostService (외부와 연동, 다른 서비스와 통신, 필요시 레이어 나누는 것도 고려!)
@@ -88,7 +89,7 @@ public class PostService {
     @Transactional
     public PostResponse edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         // PostEditorBuilder 생성
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
@@ -108,7 +109,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         // 삭제
         postRepository.delete(post);
