@@ -150,4 +150,25 @@ class PostServiceTest {
         Assertions.assertEquals("매튜", changedPost.getTitle());
         Assertions.assertEquals("초가집", changedPost.getContent());
     }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    void test6() {
+        // given
+        Post post = Post.builder()
+                .title("매튜")
+                .content("서울강동")
+                .build();
+        postRepository.save(post);
+
+        // when
+        postService.delete(post.getId());
+
+        // then
+        assertEquals(0L, postRepository.count());
+        assertThrows(RuntimeException.class, () -> {
+            postRepository.findById(post.getId())
+                    .orElseThrow(() -> new RuntimeException("존재하지 않는 글입니다."));
+        });
+    }
 }

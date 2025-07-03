@@ -105,4 +105,12 @@ public class PostService {
         // 응답 객체로 반환
         return new PostResponse(post);
     }
+
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        // 삭제
+        postRepository.delete(post);
+    }
 }
