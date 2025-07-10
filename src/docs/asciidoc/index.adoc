@@ -1,0 +1,24 @@
+= YOLOG 0 API 문서
+:sectnums: // 문서의 목차와 관련된 항목
+:toc: left
+:toclevels: 4
+:toc-title: Table of Contents
+:source-highlighter: prettify
+
+매튜 <dydals3440@gmail.com>
+
+v1.0.0, 2025.07.11
+
+== 글 단건 조회
+
+=== 요청
+
+include::{snippets}/index/http-request.adoc[]
+
+=== 응답
+
+include::{snippets}/index/http-response.adoc[]
+
+=== CURL
+
+include::{snippets}/index/curl-request.adoc[]

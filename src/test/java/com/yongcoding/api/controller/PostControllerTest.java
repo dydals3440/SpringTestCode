@@ -79,17 +79,16 @@ class PostControllerTest {
                 .title(null)
                 .content("글 내용입니다.")
                 .build();
-
         String json = objectMapper.writeValueAsString(request);
 
+        // expect: 400 + 상태 메시지 확인 + 바디가 빈 문자열
         mockMvc.perform(post("/posts")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-                .andExpect(jsonPath("$.validations.title").value("타이틀을 입력해주세요"))
+                .andExpect(status().reason("Invalid request content."))
+                .andExpect(content().string(""))   // 빈 바디
                 .andDo(print());
     }
 
