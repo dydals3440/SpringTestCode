@@ -233,4 +233,5 @@ class PostServiceTest {
             postService.edit(post.getId() + 1L, postEdit);
         });
     }
+
 }

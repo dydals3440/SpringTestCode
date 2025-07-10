@@ -1,5 +1,6 @@
 package com.yongcoding.api.request;
 
+import com.yongcoding.api.exceptions.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class PostCreate {
     private final String content;
 
 
-//    public PostCreate(String title, String content) {
+    //    public PostCreate(String title, String content) {
 //        this.title = title;
 //        this.content = content;
 //    }
@@ -40,5 +41,12 @@ public class PostCreate {
                 .title(title)
                 .content(content)
                 .build();
+    }
+
+    // starter-validation을 사용하여, 유효성 검사를 할 수 있습니다.
+    public void validate() {
+        if (title.contains("바보")) {
+            throw new InvalidRequest("title", "제목에 바보를 포함할 수 없습니다.");
+        }
     }
 }

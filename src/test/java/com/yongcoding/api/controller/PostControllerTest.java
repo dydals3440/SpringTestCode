@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.hamcrest.Matchers.is;
 
 import java.util.List;
@@ -75,9 +76,9 @@ class PostControllerTest {
     void test2() throws Exception {
         // given
         PostCreate request = PostCreate.builder()
-                        .title(null)
-                        .content("글 내용입니다.")
-                        .build();
+                .title(null)
+                .content("글 내용입니다.")
+                .build();
 
         String json = objectMapper.writeValueAsString(request);
 
@@ -135,7 +136,7 @@ class PostControllerTest {
 
         // expected (when + then)
         mockMvc.perform(get("/posts/{id}", post.getId())
-                .contentType(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
@@ -180,9 +181,9 @@ class PostControllerTest {
         postRepository.save(post);
 
         PostEdit postEdit = PostEdit.builder()
-                        .title("매튜튜")
-                        .content("서울강동")
-                        .build();
+                .title("매튜튜")
+                .content("서울강동")
+                .build();
 
         // when
         mockMvc.perform(patch("/posts/{id}", post.getId())
@@ -203,8 +204,55 @@ class PostControllerTest {
         postRepository.save(post);
 
         mockMvc.perform(delete("/posts/{postId}", post.getId())
-                .contentType(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 조회")
+    void test9() throws Exception {
+        // expected
+        mockMvc.perform(delete("/posts/{postId}", 1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정")
+    void test10() throws Exception {
+        // given
+        PostEdit postEdit = PostEdit.builder()
+                .title("매튜튜")
+                .content("서울강동")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}", 1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 작성시 제목에 '바보'가 포함되면 예외 발생")
+    void test11() throws Exception {
+        // Given
+        PostCreate request = PostCreate.builder()
+                .title("바보입니다.")
+                .content("내용입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        // when
+        mockMvc.perform(post("/posts")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }

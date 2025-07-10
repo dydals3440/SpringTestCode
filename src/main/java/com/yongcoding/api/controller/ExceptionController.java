@@ -1,8 +1,11 @@
 package com.yongcoding.api.controller;
 
+import com.yongcoding.api.exceptions.InvalidRequest;
+import com.yongcoding.api.exceptions.YologException;
 import com.yongcoding.api.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,4 +31,32 @@ public class ExceptionController {
 
         return response;
     }
+
+    @ResponseBody
+    @ExceptionHandler(YologException.class)
+    public ResponseEntity<ErrorResponse> yologException(YologException e) {
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        // 응답 json validation -> title : 제목에 바보를 포함할 수 없습니다.
+//        if (e instanceof InvalidRequest) {
+//            InvalidRequest invalidRequest = (InvalidRequest) e;
+//            String fieldName = invalidRequest.getFieldName();
+//            String message = invalidRequest.getMessage();
+//            body.addValidation(fieldName, message);
+//        }
+
+        ResponseEntity<ErrorResponse> response = ResponseEntity.status(statusCode)
+                .body(body);
+
+
+        return response;
+    }
+
+    ;
 }

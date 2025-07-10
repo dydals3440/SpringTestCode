@@ -21,6 +21,10 @@ public class PostController {
 
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request) {
+//        if (request.getTitle().contains("바보")) {
+//            throw new InvalidRequest();
+//        }
+        request.validate();
         postService.write(request);
     }
 
@@ -38,7 +42,7 @@ public class PostController {
 
     @PatchMapping("/posts/{postId}")
     public PostResponse edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
-       return postService.edit(postId, request);
+        return postService.edit(postId, request);
     }
 
     @DeleteMapping("/posts/{postId}")
