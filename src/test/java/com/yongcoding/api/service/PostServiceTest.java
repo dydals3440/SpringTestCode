@@ -65,6 +65,9 @@ class PostServiceTest {
                 .build();
         postRepository.save(requestPost);
 
+        // { id: 1, title: "제목입니다.", content: "내용입니다." }
+        // title -> "제목" 키워드가 금지어. (디비에 저장이되면안됨)
+
 
         // when
         PostResponse response = postService.get(requestPost.getId());
@@ -76,14 +79,15 @@ class PostServiceTest {
         assertEquals("내용입니다.", response.getContent());
     }
 
+
     @Test
     @DisplayName("글 1페이지 조회")
     void test3() {
         // given (lambda 표현식으로 작성)
         List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> Post.builder()
-                         .title("foo" + i)
-                         .content("bar" + i)
+                        .title("foo" + i)
+                        .content("bar" + i)
                         .build())
                 .collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
@@ -204,7 +208,6 @@ class PostServiceTest {
                 .content("내용입니다.")
                 .build();
         postRepository.save(post);
-
 
 
         // expected
