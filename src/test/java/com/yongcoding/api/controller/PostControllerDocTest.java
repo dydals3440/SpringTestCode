@@ -12,13 +12,11 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationExtension;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -65,27 +63,27 @@ public class PostControllerDocTest {
     void test2() throws Exception {
         // given
         PostCreate request = PostCreate.builder()
-                .title("나는 매튜.")
-                .content("서울을 삽니다")
-                .build();
+            .title("나는 매튜.")
+            .content("서울을 삽니다")
+            .build();
 
         String json = objectMapper.writeValueAsString(request);
 
         // when & then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/posts")
-                                .contentType(APPLICATION_JSON)
-                                .accept(APPLICATION_JSON)
-                                .content(json)
+                MockMvcRequestBuilders.post("/posts")
+                    .contentType(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .content(json)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("index",
+                requestFields(
+                    fieldWithPath("title").description("제목"),
+                    fieldWithPath("content").description("내용")
                 )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("index",
-                        requestFields(
-                                fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용")
-                        )
-                ));
+            ));
     }
 
 
