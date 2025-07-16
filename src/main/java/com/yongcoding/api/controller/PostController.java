@@ -20,10 +20,11 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request) {
+    public void post(@RequestBody @Valid PostCreate request, @RequestHeader String authorization) {
 //        if (request.getTitle().contains("바보")) {
 //            throw new InvalidRequest();
 //        }
+
         request.validate();
         postService.write(request);
     }
@@ -41,12 +42,13 @@ public class PostController {
     }
 
     @PatchMapping("/posts/{postId}")
-    public PostResponse edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
+    public PostResponse edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request,
+                             @RequestHeader String authorization) {
         return postService.edit(postId, request);
     }
 
     @DeleteMapping("/posts/{postId}")
-    public void delete(@PathVariable Long postId) {
+    public void delete(@PathVariable Long postId, @RequestHeader String authorization) {
         postService.delete(postId);
     }
 }
