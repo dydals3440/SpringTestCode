@@ -1,4 +1,4 @@
-package com.yongcoding.api.exceptions;
+package com.yongcoding.api.exception;
 
 import lombok.Getter;
 

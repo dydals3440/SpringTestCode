@@ -2,7 +2,7 @@ package com.yongcoding.api.service;
 
 import com.yongcoding.api.domain.Post;
 import com.yongcoding.api.domain.PostEditor;
-import com.yongcoding.api.exceptions.PostNotFound;
+import com.yongcoding.api.exception.PostNotFound;
 import com.yongcoding.api.repository.PostRepository;
 import com.yongcoding.api.request.PostCreate;
 import com.yongcoding.api.request.PostEdit;
@@ -50,26 +50,26 @@ public class PostService {
 
     public void write(PostCreate postCreate) {
         Post post = Post.builder()
-                .title(postCreate.getTitle())
-                .content(postCreate.getContent())
-                .build();
+            .title(postCreate.getTitle())
+            .content(postCreate.getContent())
+            .build();
 
         postRepository.save(post);
     }
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFound());
+            .orElseThrow(() -> new PostNotFound());
         /**
          * Controller -> WebPostService(response를 위한 행위) -> Repository
          *               PostService (외부와 연동, 다른 서비스와 통신, 필요시 레이어 나누는 것도 고려!)
          */
         // 서비스 정책에 맞는 응답 클래스를 분리하는게 좋음
         return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .build();
+            .id(post.getId())
+            .title(post.getTitle())
+            .content(post.getContent())
+            .build();
     }
 
     public List<PostResponse> getList(PostSearch postSearch) {
@@ -79,9 +79,10 @@ public class PostService {
 //        return postRepository.findAll(pageable).stream()
 //                .map(PostResponse::new)
 //                .collect(Collectors.toList());
-        return postRepository.getList(postSearch).stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
+        return postRepository.getList(postSearch)
+            .stream()
+            .map(PostResponse::new)
+            .collect(Collectors.toList());
     }
 
     // post.save 대신
@@ -89,16 +90,16 @@ public class PostService {
     @Transactional
     public PostResponse edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+            .orElseThrow(PostNotFound::new);
 
         // PostEditorBuilder 생성
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
         // 값 설정 후 PostEditor 생성
         PostEditor postEditor = editorBuilder
-                .title(postEdit.getTitle())
-                .content(postEdit.getContent())
-                .build();
+            .title(postEdit.getTitle())
+            .content(postEdit.getContent())
+            .build();
 
         // 엔티티 수정
         post.edit(postEditor);
@@ -109,7 +110,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+            .orElseThrow(PostNotFound::new);
 
         // 삭제
         postRepository.delete(post);

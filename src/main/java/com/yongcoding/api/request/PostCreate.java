@@ -1,6 +1,6 @@
 package com.yongcoding.api.request;
 
-import com.yongcoding.api.exceptions.InvalidRequest;
+import com.yongcoding.api.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,9 +38,9 @@ public class PostCreate {
     // final 필드의 경우, 생성자에서만 값을 설정할 수 있습니다.
     public PostCreate changeTitle(String title) {
         return PostCreate.builder()
-                .title(title)
-                .content(content)
-                .build();
+            .title(title)
+            .content(content)
+            .build();
     }
 
     // starter-validation을 사용하여, 유효성 검사를 할 수 있습니다.
